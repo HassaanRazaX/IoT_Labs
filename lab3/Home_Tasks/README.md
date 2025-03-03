@@ -1,19 +1,24 @@
-# LAB3 - MicroPython Lab Tasks
+# LAB3 - MicroPython Home Tasks
 
-## LabTasks
+## Home Tasks
 
-### Task 1: Displaying Humidity & Temperature on OLED (Wokwi)
+###  Task 1: Displaying Temperature & Humidity on OLED
+###  Task 1.1
 In this task, I connected the DHT22 sensor with the ESP and showed temperature and humidity readings on the OLED using Wokwi. It was cool seeing live data pop up on the small screen. I just had to keep refreshing the readings every second, and sometimes it took a sec to load, but it worked fine overall.
 
+###  Task 1.2: Try adding emojis
+In this task I tried to add emojis but OLED does not support the emojis to display even though i tried to use a framebuf library to show emoji as bitmap but it did'nt work.
+###  Task 1.3: Try adding emojis
+I blowed towards DHT11 sensor and i observed the immidiate rise in temperature and humidity displayed on OLED.
+
 ---
 
-### Task 2: Exploring OLED Display (128 x 64)
-This task was about playing with the OLED screen. I learned that the OLED has 128 pixels in width and 64 in height. Each character I displayed took 8 pixels, so fitting stuff on the screen needed some thinking. I just wrote "Welcome IoT" to see how it looks. It was simple but fun to see text appear like magic.
-
+### Task 2: Running the Code Without Interrupt 
+In this task I run the code by disabling interupt so ISR do not run .ISR handles the button press, whenever we press button it toggles the power of OLED. As a result of disabling ISR , screen of oled is continuously turned on and have no any effect.  
 ---
 
-### Task 3: Centering Text on OLED
-Here, I tried to center the text "Welcome IoT" on the OLED. I realized it's not just about putting random numbers for x and y positions; you gotta do some calculations. I guessed some values to place it roughly in the middle. Not perfectly centered but close enough. It was kinda tricky but interesting.
+### Task 3: Understanding Debounce Issue
+#### What is a debounce issue and why we get rid of it? 
 
 ---
 
