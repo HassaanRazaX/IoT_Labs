@@ -1,4 +1,4 @@
-#Task4 Interupt and Debounce on ESP32
+#Task2 Interupt and Debounce on ESP32
 print("Hello, ESP32-S3!")
 
 from machine import Pin, I2C, Timer
@@ -41,7 +41,10 @@ def debounce_callback(timer):
     debounce_timer = None
 
 # Attach the interrupt to the button's rising edge
-button.irq(trigger=Pin.IRQ_FALLING, handler=button_pressed)
+#Disabling Interupt
+
+
+#button.irq(trigger=Pin.IRQ_FALLING, handler=button_pressed)
 
 
 
@@ -67,6 +70,7 @@ while True:
     
         
     time.sleep(1)  # Update every 2 seconds
+
 
 
 
