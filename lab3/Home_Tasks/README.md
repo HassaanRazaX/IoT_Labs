@@ -13,9 +13,10 @@ I blowed towards DHT11 sensor and i observed the immidiate rise in temperature a
 
 ---
 
-### Task 2: Running the Code Without Interrupt 
+### Task 2: Running the Code Without Interrupt
 
-In this task I run the code by disabling interupt so ISR do not run .ISR handles the button press, whenever we press button it toggles the power of OLED. As a result of disabling ISR , screen of oled is continuously turned on and have no any effect.  
+In this task I run the code by disabling interupt so 
+ISR do not run .ISR handles the button press, whenever we press button it toggles the power of OLED. As a result of disabling ISR , screen of oled is continuously turned on and have no any effect.  
 ---
 
 ### Task 3: Understanding Debounce Issue  
