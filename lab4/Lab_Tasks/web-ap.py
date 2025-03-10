@@ -2,13 +2,13 @@ import network
 import socket
 print("hhhhh")
 # Setup Access Point
-ssid = "ChanaChaat"
-password = "12553"
-#ap = network.WLAN(network.AP_IF)
-#ap.active(True)
-#ap.config(essid=ssid, password=password)
+ssid = "ABC"
+password = "111"
+ap = network.WLAN(network.AP_IF)
+ap.active(True)
+ap.config(essid=ssid, password=password)
 
-#print("Access Point Active, IP:", ap.ifconfig()[0])
+print("Access Point Active, IP:", ap.ifconfig()[0])
 
 # Start Web Server
 def web_page():

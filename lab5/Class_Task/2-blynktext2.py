@@ -6,9 +6,12 @@ import utime as time
 from machine import Pin, I2C, Timer
 import ssd1306
 
-WIFI_SSID = 'your network/hotspot ssid'
-WIFI_PASS = 'your network/hotspot password'
-BLYNK_AUTH = "your blynk device authentication"
+# Wi-Fi Credentials
+WIFI_SSID = "NTU FSD"
+WIFI_PASS = ""
+
+# Blynk Auth Token
+BLYNK_AUTH = "dxzXt5_Mzx2I4-9MTPYMSsFu--24UgMF"
 
 print("Connecting to WiFi network '{}'".format(WIFI_SSID))
 wifi = network.WLAN(network.STA_IF)

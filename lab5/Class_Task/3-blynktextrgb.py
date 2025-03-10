@@ -9,9 +9,12 @@ from neopixel import NeoPixel
 #from machine import Pin, I2C, Timer
 import ssd1306
 
-WIFI_SSID = 'your network/hotspot ssid'
-WIFI_PASS = 'your network/hotspot password'
-BLYNK_AUTH = "your blynk device authentication"
+# Wi-Fi Credentials
+WIFI_SSID = "NTU FSD"
+WIFI_PASS = ""
+
+# Blynk Auth Token
+BLYNK_AUTH = "xp385NmlZ_j4x5nH-qx0p-OBis4aj_RC"
 
 print("Connecting to WiFi network '{}'".format(WIFI_SSID))
 wifi = network.WLAN(network.STA_IF)
