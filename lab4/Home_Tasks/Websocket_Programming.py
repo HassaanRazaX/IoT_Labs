@@ -12,13 +12,13 @@ import ssd1306
 
 
 
-ssid_st = "300C"
-password_st = "Hashim000"
+ssid_st = "AAA"
+password_st = "11111111"
 
 print("Connecting to WiFi", end="")
 sta = network.WLAN(network.STA_IF)
 sta.active(True)
-sta.connect(ssid_st,password_st)
+sta.connect( ssid_st,password_st )
 
 # Wait for connection
 for _ in range(10):
@@ -37,7 +37,7 @@ else:
 
 
 
-ssid_ap = "ESP32_AP"
+ssid_ap = "ESP32_HRX"
 password_ap = "12345678"  # Minimum 8 characters
 auth_mode = network.AUTH_WPA2_PSK  # Secure mode (recommended)
 
@@ -51,21 +51,18 @@ print("AP IP Address:", ap.ifconfig()[0])
 
 
 
-#####################OLED########################
+
 # Initialize OLED display
 i2c = I2C(scl=Pin(9), sda=Pin(8))
 oled = ssd1306.SSD1306_I2C(128, 64, i2c)
 
-oled.fill(0)
-oled.text("hello", 0, 0)
-oled.show()
-
+oled.text("HElllo", 0, 0)
 def update_oled(message):
     oled.fill(0)
     oled.text(message, 0, 0)
     oled.show()
 
-#####################OLED########################
+
 dht_pin=4
 
 dht_sensor=dht.DHT11(Pin(dht_pin))
@@ -108,7 +105,7 @@ def web_page():
     return html
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind(("0.0.0.0", 80))
+s.bind(("0.0.0.0",80))
 s.listen(5)
 
 while True:
@@ -129,14 +126,10 @@ while True:
         
     elif "msg=" in request:
         msg = request.split("msg=")[1].split(" ")[0].replace("+", " ")
-        print(msg)
         update_oled(msg)
         
     response = web_page()
     conn.send("HTTP/1.1 200 OK\nContent-Type: text/html\n\n")
     conn.send(response)
     conn.close()
-
-
-
 
