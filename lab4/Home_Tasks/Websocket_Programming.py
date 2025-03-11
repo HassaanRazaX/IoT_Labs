@@ -89,7 +89,6 @@ def decode_url_encoded_string(s):
             i += 1
     return result    
 
-# Web server function
 def web_page():
     html = """<!DOCTYPE html>
     <html>
@@ -98,7 +97,7 @@ def web_page():
         <title>ESP32 OLED Display</title>
         <style>
             body {
-                font-family: Arial, sans-serif;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 background-color: #1e1e2f;
                 color: #ffffff;
                 margin: 0;
@@ -108,10 +107,12 @@ def web_page():
             h1 {
                 color: #ff6f61;
                 font-size: 2.5em;
+                margin-bottom: 20px;
             }
             h2 {
                 color: #a8e6cf;
                 font-size: 1.8em;
+                margin: 10px 0;
             }
             button {
                 background-color: #ff6f61;
@@ -141,6 +142,41 @@ def web_page():
             }
             .rgb-buttons button:nth-child(3) {
                 background-color: #008CBA;
+            }
+            .input_rgb {
+                background-color: #2e2e4a;
+                padding: 20px;
+                border-radius: 15px;
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+                display: inline-block;
+                margin-top: 20px;
+            }
+            .input_rgb label {
+                font-size: 1.2em;
+                margin-right: 10px;
+            }
+            .input_rgb input[type="number"] {
+                padding: 10px;
+                width: 80px;
+                border-radius: 25px;
+                border: 2px solid #4CAF50;
+                background-color: #2e2e4a;
+                color: #ffffff;
+                font-size: 1.1em;
+                margin-right: 10px;
+            }
+            .input_rgb input[type="submit"] {
+                padding: 10px 20px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 25px;
+                cursor: pointer;
+                font-size: 1.1em;
+                transition: background-color 0.3s ease;
+            }
+            .input_rgb input[type="submit"]:hover {
+                background-color: #45a049;
             }
             .sensor-data {
                 background-color: #2e2e4a;
@@ -217,13 +253,13 @@ def web_page():
             <a href="/?RGB=blue"><button>🔵 Turn RGB BLUE</button></a>
         </div>
         <div class="input_rgb">
-        <h2>RGB LED Control</h2>
-        <form action="/" method="GET">
-            <label>R:</label> <input type="number" name="R" min="0  max="255" value="0">
-             <label>G:</label> <input type="number" name="G" min="0" max="255" value="0">
-            <label>B:</label> <input type="number" name="B" min="0" max="255" value="0">
-            <input type="submit" value="Set Color">
-        </form>
+            <h2>RGB LED Control</h2>
+            <form action="/" method="GET">
+                <label>R:</label> <input type="number" name="R" min="0" max="255" value="0">
+                <label>G:</label> <input type="number" name="G" min="0" max="255" value="0">
+                <label>B:</label> <input type="number" name="B" min="0" max="255" value="0">
+                <input type="submit" value="Set Color">
+            </form>
         </div>
         <br>
         <div class="sensor-data">
