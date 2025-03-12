@@ -6,8 +6,6 @@ from neopixel import NeoPixel
 import dht
 import json
 from ssd1306 import SSD1306_I2C  # OLED display library
-import usocket as socket
-import uwebsockets as websockets
 
 # DHT Sensor setup
 dht_pin = 4
@@ -45,7 +43,7 @@ else:
     print("Failed to connect")
 
 # Access Point setup
-ssid_ap = "ESP_1354"
+ssid_ap = "ESP_1362"
 password_ap = "12345678"
 auth_mode = network.AUTH_WPA2_PSK
 
@@ -72,6 +70,26 @@ def update_oled(message):
     oled.text(message, 0, 0)
     oled.show()
 
+# Function to decode URL-encoded strings
+def decode_url_encoded_string(s):
+    result = ""
+    i = 0
+    while i < len(s):
+        if s[i] == "%":
+            # Decode URL-encoded characters (e.g., %20 -> space)
+            hex_value = s[i+1:i+3]
+            result += chr(int(hex_value, 16))
+            i += 3
+        elif s[i] == "+":
+            # Replace '+' with space
+            result += " "
+            i += 1
+        else:
+            result += s[i]
+            i += 1
+    return result
+
+# HTML page with JavaScript for polling
 def web_page():
     html = """<!DOCTYPE html>
     <html>
@@ -122,24 +140,30 @@ def web_page():
             }
         </style>
         <script>
-            var ws = new WebSocket('ws://' + window.location.host + '/ws');
-            ws.onmessage = function(event) {
-                var data = JSON.parse(event.data);
-                document.getElementById('temp').innerText = data.temp + " °C 🌡️";
-                document.getElementById('humidity').innerText = data.humidity + " % 💧";
-                
-                var alertDiv = document.getElementById('alert');
-                alertDiv.innerHTML = '';
-                if (data.temp > 30) {
-                    alertDiv.innerHTML = '<div class="alert high-temp">🌡️ High Temperature! 🔥</div>';
-                    ws.send('RGB:255,0,0');
-                } else if (data.humidity > 70) {
-                    alertDiv.innerHTML = '<div class="alert high-humidity">💧 High Humidity! 💦</div>';
-                    ws.send('RGB:0,0,255');
-                } else {
-                    ws.send('RGB:0,255,0');
-                }
-            };
+            function updateSensorData() {
+                fetch('/sensor')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('temp').innerText = data.temp + " °C 🌡️";
+                        document.getElementById('humidity').innerText = data.humidity + " % 💧";
+
+                        var alertDiv = document.getElementById('alert');
+                        alertDiv.innerHTML = '';
+                        if (data.temp > 30) {
+                            alertDiv.innerHTML = '<div class="alert high-temp">🌡️ High Temperature! 🔥</div>';
+                            fetch('/rgb?color=red');
+                        } else if (data.humidity > 70) {
+                            alertDiv.innerHTML = '<div class="alert high-humidity">💧 High Humidity! 💦</div>';
+                            fetch('/rgb?color=blue');
+                        } else {
+                            fetch('/rgb?color=green');
+                        }
+                    })
+                    .catch(error => console.error('Error fetching sensor data:', error));
+            }
+
+            // Update sensor data every 2 seconds
+            setInterval(updateSensorData, 2000);
         </script>
     </head>
     <body>
@@ -159,37 +183,37 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind(("0.0.0.0", 80))
 s.listen(5)
 
-# WebSocket handler
-def handle_websocket(ws):
-    while True:
-        temp, humidity = read_dht_sensor()
-        if temp is None or humidity is None:
-            temp = "N/A"
-            humidity = "N/A"
-        sensor_data = {"temp": temp, "humidity": humidity}
-        ws.send(json.dumps(sensor_data))
-        time.sleep(2)
-
-# Main loop
 while True:
     conn, addr = s.accept()
     print("Connection from:", addr)
     request = conn.recv(1024).decode()
     print("Request:", request)
-    
-    if request.startswith("GET /ws"):
-        print("WebSocket request")
-        ws = websockets.server(conn)
-        handle_websocket(ws)
-    elif request.startswith("GET / "):
+
+    if "/sensor" in request:
+        # Handle sensor data request
+        temp, humidity = read_dht_sensor()
+        if temp is None or humidity is None:
+            temp = "N/A"
+            humidity = "N/A"
+        sensor_data = {"temp": temp, "humidity": humidity}
+        conn.send("HTTP/1.1 200 OK\nContent-Type: application/json\n\n")
+        conn.send(json.dumps(sensor_data))
+    elif "/rgb?color=red" in request:
+        neo[0] = (255, 0, 0)  # Set RGB to red
+        neo.write()
+        conn.send("HTTP/1.1 200 OK\n\n")
+    elif "/rgb?color=green" in request:
+        neo[0] = (0, 255, 0)  # Set RGB to green
+        neo.write()
+        conn.send("HTTP/1.1 200 OK\n\n")
+    elif "/rgb?color=blue" in request:
+        neo[0] = (0, 0, 255)  # Set RGB to blue
+        neo.write()
+        conn.send("HTTP/1.1 200 OK\n\n")
+    else:
+        # Serve the main webpage
         response = web_page()
         conn.send("HTTP/1.1 200 OK\nContent-Type: text/html\n\n")
         conn.send(response)
-    elif request.startswith("POST /RGB"):
-        data = request.split("\r\n\r\n")[1]
-        r, g, b = map(int, data.split(','))
-        neo[0] = (r, g, b)
-        neo.write()
-        conn.send("HTTP/1.1 200 OK\n\n")
-    
+
     conn.close()
