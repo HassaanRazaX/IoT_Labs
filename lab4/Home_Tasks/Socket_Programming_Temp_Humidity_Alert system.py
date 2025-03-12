@@ -132,11 +132,29 @@ def web_page():
                 border-radius: 5px;
                 margin: 10px 0;
             }
-            .alert.high-temp {
-                background-color: #ff6f61;
+            .alert.temp-low {
+                background-color: #008CBA; /* Blue */
             }
-            .alert.high-humidity {
-                background-color: #008CBA;
+            .alert.temp-normal {
+                background-color: #FFD700; /* Yellow */
+            }
+            .alert.temp-high {
+                background-color: #FF0000; /* Red */
+                animation: blink 1s infinite;
+            }
+            .alert.humidity-dry {
+                background-color: #FFA500; /* Orange */
+            }
+            .alert.humidity-normal {
+                background-color: #4CAF50; /* Green */
+            }
+            .alert.humidity-high {
+                background-color: #800080; /* Purple */
+            }
+            @keyframes blink {
+                0% { opacity: 1; }
+                50% { opacity: 0; }
+                100% { opacity: 1; }
             }
         </style>
         <script>
@@ -147,16 +165,27 @@ def web_page():
                         document.getElementById('temp').innerText = data.temp + " °C 🌡️";
                         document.getElementById('humidity').innerText = data.humidity + " % 💧";
 
-                        var alertDiv = document.getElementById('alert');
-                        alertDiv.innerHTML = '';
-                        if (data.temp > 30) {
-                            alertDiv.innerHTML = '<div class="alert high-temp">🌡️ High Temperature! 🔥</div>';
-                            fetch('/rgb?color=red');
-                        } else if (data.humidity > 70) {
-                            alertDiv.innerHTML = '<div class="alert high-humidity">💧 High Humidity! 💦</div>';
+                        // Temperature Alerts
+                        var tempAlertDiv = document.getElementById('temp-alert');
+                        if (data.temp < 25) {
+                            tempAlertDiv.innerHTML = '<div class="alert temp-low">🌡️ Low Temperature! ❄️</div>';
                             fetch('/rgb?color=blue');
-                        } else {
-                            fetch('/rgb?color=green');
+                        } else if (data.temp >= 25 && data.temp <= 26) {
+                            tempAlertDiv.innerHTML = '<div class="alert temp-normal">🌡️ Normal Temperature! 😊</div>';
+                            fetch('/rgb?color=yellow');
+                        } else if (data.temp >= 27) {
+                            tempAlertDiv.innerHTML = '<div class="alert temp-high">🌡️ High Temperature! 🔥</div>';
+                            fetch('/rgb?color=red');
+                        }
+
+                        // Humidity Alerts
+                        var humidityAlertDiv = document.getElementById('humidity-alert');
+                        if (data.humidity < 50) {
+                            humidityAlertDiv.innerHTML = '<div class="alert humidity-dry">💧 Dry! 🏜️</div>';
+                        } else if (data.humidity >= 50 && data.humidity < 70) {
+                            humidityAlertDiv.innerHTML = '<div class="alert humidity-normal">💧 Normal Humidity! 😊</div>';
+                        } else if (data.humidity >= 70) {
+                            humidityAlertDiv.innerHTML = '<div class="alert humidity-high">💧 High Humidity! 💦</div>';
                         }
                     })
                     .catch(error => console.error('Error fetching sensor data:', error));
@@ -172,7 +201,8 @@ def web_page():
             <h1>🌡️ TEMPERATURE AND HUMIDITY 💧</h1>
             <h2>Temp: <span id="temp">N/A</span></h2>
             <h2>Humidity: <span id="humidity">N/A</span></h2>
-            <div id="alert"></div>
+            <div id="temp-alert"></div>
+            <div id="humidity-alert"></div>
         </div>
     </body>
     </html>"""
@@ -202,12 +232,12 @@ while True:
         neo[0] = (255, 0, 0)  # Set RGB to red
         neo.write()
         conn.send("HTTP/1.1 200 OK\n\n")
-    elif "/rgb?color=green" in request:
-        neo[0] = (0, 255, 0)  # Set RGB to green
-        neo.write()
-        conn.send("HTTP/1.1 200 OK\n\n")
     elif "/rgb?color=blue" in request:
         neo[0] = (0, 0, 255)  # Set RGB to blue
+        neo.write()
+        conn.send("HTTP/1.1 200 OK\n\n")
+    elif "/rgb?color=yellow" in request:
+        neo[0] = (255, 255, 0)  # Set RGB to yellow
         neo.write()
         conn.send("HTTP/1.1 200 OK\n\n")
     else:
