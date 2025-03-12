@@ -54,40 +54,42 @@ ap.config(essid=ssid_ap, password=password_ap, authmode=auth_mode)
 print("Access Point Active")
 print("AP IP Address:", ap.ifconfig()[0])
 
+# Variables to store previous sensor values
+prev_temp = None
+prev_humidity = None
+
 # Function to read DHT sensor with error handling
 def read_dht_sensor():
+    global prev_temp, prev_humidity
     try:
         dht_sensor.measure()
         temp = dht_sensor.temperature()
         humidity = dht_sensor.humidity()
+        prev_temp = temp
+        prev_humidity = humidity
         return temp, humidity
     except Exception as e:
         print("Failed to read DHT sensor:", e)
-        return None, None
+        return prev_temp, prev_humidity  # Return previous values if sensor fails
 
-def update_oled(message):
+# Function to update OLED display
+def update_oled(temp, humidity, temp_alert, humidity_alert):
     oled.fill(0)
-    oled.text(message, 0, 0)
+    oled.text("Temp: {} C".format(temp), 0, 0)
+    oled.text("Humidity: {} %".format(humidity), 0, 16)
+    oled.text("{}".format(temp_alert), 0, 32)
+    oled.text("{}".format(humidity_alert), 0, 48)
     oled.show()
 
-# Function to decode URL-encoded strings
-def decode_url_encoded_string(s):
-    result = ""
-    i = 0
-    while i < len(s):
-        if s[i] == "%":
-            # Decode URL-encoded characters (e.g., %20 -> space)
-            hex_value = s[i+1:i+3]
-            result += chr(int(hex_value, 16))
-            i += 3
-        elif s[i] == "+":
-            # Replace '+' with space
-            result += " "
-            i += 1
-        else:
-            result += s[i]
-            i += 1
-    return result
+# Function to blink NeoPixel LED
+def blink_led(color, blink_count=5, delay=0.5):
+    for _ in range(blink_count):
+        neo[0] = color
+        neo.write()
+        time.sleep(delay)
+        neo[0] = (0, 0, 0)
+        neo.write()
+        time.sleep(delay)
 
 # HTML page with JavaScript for polling
 def web_page():
@@ -223,11 +225,32 @@ while True:
         # Handle sensor data request
         temp, humidity = read_dht_sensor()
         if temp is None or humidity is None:
-            temp = "N/A"
-            humidity = "N/A"
+            temp = prev_temp
+            humidity = prev_humidity
         sensor_data = {"temp": temp, "humidity": humidity}
         conn.send("HTTP/1.1 200 OK\nContent-Type: application/json\n\n")
         conn.send(json.dumps(sensor_data))
+
+        # Determine alerts
+        temp_alert = ""
+        humidity_alert = ""
+        if temp < 25:
+            temp_alert = "Low Temperature! ❄️"
+        elif 25 <= temp <= 26:
+            temp_alert = "Normal Temperature! 😊"
+        elif temp >= 27:
+            temp_alert = "High Temperature! 🔥"
+            blink_led((255, 0, 0))  # Blink red LED for high temperature
+
+        if humidity < 50:
+            humidity_alert = "Dry! 🏜️"
+        elif 50 <= humidity < 70:
+            humidity_alert = "Normal Humidity! 😊"
+        elif humidity >= 70:
+            humidity_alert = "High Humidity! 💦"
+
+        # Update OLED display
+        update_oled(temp, humidity, temp_alert, humidity_alert)
     elif "/rgb?color=red" in request:
         neo[0] = (255, 0, 0)  # Set RGB to red
         neo.write()
