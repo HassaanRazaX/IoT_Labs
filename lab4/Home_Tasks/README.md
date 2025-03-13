@@ -113,6 +113,7 @@ The project is divided into two tasks:
 ![Complete UI](image-1.png)
 
 **RGB control buttons and input fields**
+
 ![RGB buttons](image-2.png)
 
 **Temperature and humidity display**
