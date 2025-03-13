@@ -106,23 +106,32 @@ The project is divided into two tasks:
 ---
 
 ## **Screenshots**  
-*(Add screenshots of the web interface, hardware setup, and OLED display here)*  
+
 ### **Task 1**
 **Web Interface**
+
 ![Complete UI](image-1.png)
+
 **RGB control buttons and input fields**
 ![RGB buttons](image-2.png)
+
 **Temperature and humidity display**
+
 ![Temp-Humidity](image-3.png)
+
 **OLED message input field**
+
 ![input of OLED](image-4.png)
 
 ---
 ### **Task 2**
+
 ![hot weather](image-5.png)
+
 ![Cold Weather](image-6.png)
 
 **Physical OLED**
+
 ![OLed display](image.png)
 
 
