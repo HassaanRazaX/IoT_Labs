@@ -1,16 +1,8 @@
 # ESP32 Webserver Project: RGB Control, Sensor Data, and Weather Station  
 
 ## **Project Overview**  
-This project demonstrates the implementation of a webserver using an ESP32 microcontroller. The webserver operates in both Access Point (AP) and Station (STA) modes, allowing users to:  
-1. Control an RGB LED using a web interface.  
-2. Display real-time temperature and humidity data from a DHT11 sensor.  
-3. Send custom messages to an OLED display.  
-4. View a weather station interface with dynamic alerts based on temperature and humidity.  
-
-The project is divided into two tasks:  
-- **Task 1:** Basic webserver for RGB control, sensor data, and OLED display.  
-- **Task 2:** Advanced weather station with alerts and dynamic UI.  
-
+![task1](image.png)
+![task5](image-1.png)
 ---
 
 ## **Features**  
