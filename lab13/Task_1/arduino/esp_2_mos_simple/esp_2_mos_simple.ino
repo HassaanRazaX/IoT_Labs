@@ -6,7 +6,7 @@
 #define DHTTYPE DHT11    // DHT 22 (AM2302)
 #define WIFI_SSID "NTU FSD"
 #define WIFI_PASSWORD ""
-#define MQTT_SERVER "10.13.46.3"  // Replace with your Windows PC's IP address on LAN
+#define MQTT_SERVER "10.13.44.90"  // Replace with your Windows PC's IP address on LAN
 #define MQTT_PORT 1883
 
 DHT dht(DHTPIN, DHTTYPE);

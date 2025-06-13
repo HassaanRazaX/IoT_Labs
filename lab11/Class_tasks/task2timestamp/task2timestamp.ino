@@ -4,7 +4,7 @@
 #include <time.h>
 
 // WiFi credentials
-const char* ssid = "NTU FSD";
+const char* ssid = "NTU";
 const char* password = "";
 
 // Firebase Config

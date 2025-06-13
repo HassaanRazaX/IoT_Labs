@@ -3,13 +3,14 @@
 #include <DHT.h>
 
 // WiFi Credentials
-const char* ssid = "NTU FSD";
-const char* password = "";
+const char* ssid = "300 C";
+const char* password = "Hashim000";
 
 // Firebase Configuration
 const String FIREBASE_HOST = "lab11iot-default-rtdb.firebaseio.com";
 const String FIREBASE_AUTH = "Z6coZO2zJaVIO8blblQqBL6xDpi8dMlWu9g8GInT";
 const String FIREBASE_PATH = "/sensor_data.json";
+
 
 // DHT Sensor
 #define DHTPIN 4       // GPIO4 (change if needed)
