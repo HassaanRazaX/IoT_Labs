@@ -75,3 +75,14 @@ plt.xlabel("Predicted")
 plt.ylabel("Actual")
 plt.title("Confusion Matrix")
 plt.show()
+
+
+
+# Convert to TensorFlow Lite
+converter = tf.lite.TFLiteConverter.from_keras_model(model)
+converter.optimizations = [tf.lite.Optimize.DEFAULT]  # Optional, for size optimization
+tflite_model = converter.convert()
+
+# Save .tflite file
+with open("my_accel_model.tflite", "wb") as f:
+    f.write(tflite_model)
