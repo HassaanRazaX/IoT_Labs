@@ -299,10 +299,23 @@ void uploadDataToFirebase() {
 
   // ==================== READ SENSORS ==================== //
   // 1. Temperature
-  float temperature = tempSensor.readTemperature();
+  // float temperature = tempSensor.readTemperature();
+  // if (temperature < 10.0 || temperature > 45.0) {
+  //   Serial.println("MAX30205 error!");
+  // }
+float temperature = tempSensor.readTemperature();
+if (temperature < 10.0 || temperature > 45.0) {
+  Serial.println("MAX30205 error! Retrying...");
+  
+  delay(100);
+  resetMAX30205();  // Reset sensor before retry
+  temperature = tempSensor.readTemperature();
+  
   if (temperature < 10.0 || temperature > 45.0) {
-    Serial.println("MAX30205 error!");
+    Serial.println("MAX30205 failed after retry. Setting temperature=null.");
+    temperature = NAN;  // Mark as invalid
   }
+}
 
   // 2. Accelerometer
   sensors_event_t event;
@@ -334,7 +347,11 @@ void uploadDataToFirebase() {
 
   // ==================== BUILD JSON ==================== //
   String json = "{";
-  json += "\"temperature\":" + String(temperature, 2) + ",";
+  // json += "\"temperature\":" + String(temperature, 2) + ",";
+  json += "\"temperature\":";
+  json += isnan(temperature) ? "null" : String(temperature, 2);
+  json += ",";
+
   json += "\"accel_x\":" + String(accel_x, 2) + ",";
   json += "\"accel_y\":" + String(accel_y, 2) + ",";
   json += "\"fall_probability\":" + String(fall_probability, 4) + ",";
