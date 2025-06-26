@@ -13,6 +13,10 @@ DHT dht(DHTPIN, DHTTYPE);
 WiFiClient espClient;
 PubSubClient client(espClient);
 
+Wificleient esp;
+
+
+
 unsigned long lastMsg = 0;
 const long interval = 1000;  // Send every 5 seconds
 
@@ -53,6 +57,7 @@ void setup() {
 
 void loop() {
   if (!client.connected()) {
+    client.connect(id);
     reconnect();
   }
   client.loop();
